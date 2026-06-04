@@ -9,12 +9,14 @@ public class PomodoroTimer : MonoBehaviour
     #region REFERENCES
     [Header("POMODORO TIMER REFERENCES")]
     [SerializeField] private TMP_InputField timerInput;
+    [SerializeField] private TMP_InputField breakTimerInput;
     [SerializeField] private Image timerFill;
     [SerializeField] private TMP_Text timerText;
-    [SerializeField] private Image inputButton;
 
     private float _timeRemaining;
+    private float _totalTime;
     private bool _running;
+    private bool _onBreak;
 
     #endregion
 
@@ -23,58 +25,85 @@ public class PomodoroTimer : MonoBehaviour
     {
         if (_running) return;
 
-        if (!int.TryParse(timerInput.text, out int minutes))
+        if (!int.TryParse(timerInput.text, out int workMinutes) || workMinutes < 1 || workMinutes > 60)
         {
-            ShowInvalidOutput();
+            ShowInvalidOutput(timerInput);
             return;
         }
 
-        if (minutes < 1 || minutes > 60)
+        if (!int.TryParse(breakTimerInput.text, out int  breakMinutes) || breakMinutes < 1 || breakMinutes > 30)
         {
-            ShowInvalidOutput();
+            ShowInvalidOutput(breakTimerInput);
             return;
         }
 
-        minutes = Mathf.Clamp(minutes, 1, 60);
+        _onBreak = false;
 
-        _timeRemaining = minutes * 60f;
+        _totalTime = workMinutes * 60f;
+        _timeRemaining = _totalTime;
         _running = true;
 
-        StartCoroutine(TimerRoutine());
+        StartCoroutine(TimerRoutine(breakMinutes));
     }
 
-    private IEnumerator TimerRoutine()
+    private IEnumerator TimerRoutine(int breakMinutes)
     {
-        while (_timeRemaining > 0)
+        while (_running)
         {
-            _timeRemaining -= Time.deltaTime;
-
-            float t = _timeRemaining / 3600f;
-            timerFill.fillAmount = _timeRemaining / (float.Parse(timerInput.text) * 60f);
+            if (_timeRemaining > 0)
+            {
+                _timeRemaining -= Time.deltaTime;
+            }
+            timerFill.fillAmount = _timeRemaining / _totalTime;
 
             int mins = Mathf.FloorToInt(_timeRemaining / 60);
             int secs = Mathf.FloorToInt(_timeRemaining % 60);
 
             timerText.text = $"{mins:00} : {secs :00}";
 
+            if (_timeRemaining <= 0)
+            {
+                if (!_onBreak)
+                {
+                    StartBreak(breakMinutes);
+                    continue;
+                }
+                else
+                {
+                    FinishPomodoro();
+                    yield break;
+                }
+            }
             yield return null;
         }
-
-        _running = false;
-        TimerFinished();
     }
 
-    private void TimerFinished()
+    private void StartBreak(int breakMinutes)
     {
-        timerText.text = "00:00";
+        _onBreak = true;
+
+        _totalTime = breakMinutes * 60f;
+        _timeRemaining = _totalTime;
+
+        timerFill.transform.DOPunchScale(Vector3.one * 0.2f, 0.4f, 8, 1);
+    }
+
+    private void FinishPomodoro()
+    {
+        _running = false;
+        timerFill.fillAmount = 1f;
+        timerText.text = "";
 
         timerFill.transform.DOPunchScale(Vector3.one * 0.2f, 0.5f, 8, 1);
     }
 
-    private void ShowInvalidOutput()
+    private void ShowInvalidOutput(TMP_InputField field)
     {
-        inputButton.color = Color.red;
-        inputButton.DOColor(Color.white, 1f);
+        field.image.color = Color.red;
+        field.image.DOColor(Color.white, 0.5f);
+        field.text = "";
+        field.Select();
+        field.ActivateInputField();
     }
     #endregion
 }
