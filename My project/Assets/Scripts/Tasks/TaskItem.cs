@@ -24,7 +24,7 @@ public class TaskItem : MonoBehaviour
         onDiscard = onDiscardCallBack;
 
         completeTaskButton.onClick.AddListener(CompleteTask);
-        discardTaskButton.onClick.AddListener(DiscardTask);
+        discardTaskButton.onClick.AddListener(OnDiscardPressed);
 
         transform.localScale = Vector3.zero;
         transform.DOScale(1f, 0.25f).SetEase(Ease.OutBack);
@@ -58,6 +58,14 @@ public class TaskItem : MonoBehaviour
 
         completeTaskButton.gameObject.SetActive(false);
         discardTaskButton.gameObject.SetActive(false);
+    }
+
+    public void OnDiscardPressed()
+    {
+        TaskConfirmationPrompt.instance.Show(() =>
+        {
+            DiscardTask();
+        });
     }
     #endregion
 }
