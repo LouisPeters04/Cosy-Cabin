@@ -11,6 +11,12 @@ public class Placeable : MonoBehaviour
     [SerializeField] private int layer;
 
     [SerializeField] private int rotationIndex;
+    [SerializeField] public float heightOffset;
+    [SerializeField] public BuildFurniture furnitureData;
+
+    public int placedX;
+    public int placedY;
+
     #endregion
 
     #region PLACEABLE FUNCTIONS
@@ -18,6 +24,13 @@ public class Placeable : MonoBehaviour
     {
         rotationIndex = (rotationIndex + 1) % 8;
         transform.Rotate(0, 45f, 0);
+
+        if (rotationIndex % 2 == 1)
+        {
+            int temp = sizeX;
+            sizeX = sizeY;
+            sizeY = temp;
+        }
     }
 
     public bool CanPlace(int gridX, int gridY, BuildFurniture item)
@@ -39,13 +52,31 @@ public class Placeable : MonoBehaviour
 
     public void Place(int gridX, int gridY)
     {
-        for (int x = 0; x <= sizeX; x++)
+        placedX = gridX;
+        placedY = gridY;
+        for (int x = 0; x < sizeX; x++)
         {
             for(int y = 0; y < sizeY; y++)
             {
                 GridManager.instance.OccupyCell(gridX + x, gridY + y, layer, this);
             }
         }
+
+        Vector3 pos = transform.position;
+        pos.y = heightOffset;
+        transform.position = pos;
     }
+
+    public void ClearCells()
+    {
+        for (int x = 0; x < sizeX; x++)
+        {
+            for (int y = 0; y < sizeY; y++)
+            {
+                GridManager.instance.ClearCell(placedX + x, placedY + y, layer);
+            }
+        }
+    }
+
     #endregion
 }

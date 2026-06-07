@@ -4,7 +4,7 @@ public class PlacementPreview : MonoBehaviour
 {
     #region PLACEMENT PREVIEW REFERENCES
     private BuildFurniture item;
-    private Placeable placeable;
+    public Placeable placeable;
     private MeshRenderer[] renderers;
     #endregion
 

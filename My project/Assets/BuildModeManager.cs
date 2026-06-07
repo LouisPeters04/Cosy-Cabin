@@ -7,7 +7,7 @@ public class BuildModeManager : MonoBehaviour
 
     [Header("BUILD MODE MANAGER REFERENCES")]
     [SerializeField] private GameObject buildUI;
-
+    [SerializeField] private BuildPanelAnimator animator;
     public bool BuildModeActive {  get; private set; }
     #endregion
 
@@ -23,7 +23,14 @@ public class BuildModeManager : MonoBehaviour
     {
         BuildModeActive = !BuildModeActive;
 
-        buildUI.SetActive(BuildModeActive);
+        if (BuildModeActive)
+        {
+            animator.Show();
+        }
+        else
+        {
+            animator.Hide();
+        }
         PlacementController.instance.SetBuildMode(BuildModeActive);
     }
     #endregion

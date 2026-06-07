@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 23877630794422759}
   - component: {fileID: 5184134307898282804}
   - component: {fileID: 539627319613026137}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BoxPreview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,6 +127,10 @@ MonoBehaviour:
   canStack: 0
   layer: 0
   rotationIndex: 0
+  heightOffset: 1
+  furnitureData: {fileID: 11400000, guid: 7de7dab5bb91ee243b3f0bf4e2f8e360, type: 2}
+  placedX: 0
+  placedY: 0
 --- !u!114 &539627319613026137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,3 +143,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82b0e6b4b4862c64494346a8e00f3b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  placeable: {fileID: 5184134307898282804}
