@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65b10843ad18a1940b2f2f9cadd40baa, type: 3}
-  m_Name: BuildFurniture
+  m_Name: Box
   m_EditorClassIdentifier: 
-  ItemName: 
-  Icon: {fileID: 0}
-  prefab: {fileID: 0}
-  size: 0
+  ItemName: Box
+  Icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  prefab: {fileID: 6895410126492283229, guid: 18b05c96f9731bc49882f2639e01ac99, type: 3}
+  size: 1
   canStack: 0
   placeAbove: 0
   placeBelow: 0
