@@ -23,10 +23,10 @@ public class ShopItemUI : MonoBehaviour
         nameText.text = item.itemName;
         priceText.text = item.price.ToString();
 
-        bool alreadyOwned = BuildItemGrid.instance.ownedFurniture.Contains(item.furnitureData);
-        bool alreadyPlaced = BuildSaveManager.instance.placedSave.placed.Exists(p => p.id == item.furnitureData.name);
+        bool alreadyOwned = BuildItemGrid.instance.ownedFurniture.Exists(f => f.name == item.furnitureData.name);
+        bool alreadyPlaced = BuildSaveManager.instance.placedSave.placed.Exists(f => f.id == item.furnitureData.name);
 
-        buyButton.interactable = !alreadyOwned && alreadyPlaced;
+        buyButton.interactable = !alreadyOwned && !alreadyPlaced;
 
         buyButton.onClick.AddListener(Buy);
     }

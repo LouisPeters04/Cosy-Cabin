@@ -27,7 +27,7 @@ public class PlacementController : MonoBehaviour
     private void Update()
     {
         if (!_buildMode) return;
-
+       
         if (Input.GetMouseButtonDown(1))
         {
             Ray pickRay = cam.ScreenPointToRay(Input.mousePosition);
@@ -35,19 +35,25 @@ public class PlacementController : MonoBehaviour
             if (Physics.Raycast(pickRay, out RaycastHit pickHit, 100f, placeableMask))
             {
                 Placeable p = pickHit.collider.GetComponent<Placeable>();
-               
+                
                 if (p == null) return;
-
-                BuildItemGrid.instance.RestoreItem(p.furnitureData);
 
                 BuildSaveManager.instance.RemovePlacedFurniture(p.furnitureData, p.placedX, p.placedY);
 
                 p.ClearCells();
 
-                selectedItem = p.furnitureData;
-               
+                if (!BuildItemGrid.instance.ownedFurniture.Contains(p.furnitureData))
+                {
+                    BuildItemGrid.instance.ownedFurniture.Add(p.furnitureData);
+                    BuildItemGrid.instance.SaveOwnedItems();
+                }
+
                 TweenUtils.PopScale(p.transform);
                 Destroy(p.gameObject, 0.15f);
+
+                BuildItemGrid.instance.RestoreItem(p.furnitureData);
+
+                selectedItem = p.furnitureData;
 
                 if (preview != null)
                 {
@@ -56,9 +62,6 @@ public class PlacementController : MonoBehaviour
 
                 preview = Instantiate(selectedItem.prefab).AddComponent<PlacementPreview>();
                 preview.Init(selectedItem);
-                TweenUtils.PopScale(p.transform);
-                BuildItemGrid.instance.ownedFurniture.Add(p.furnitureData);
-                BuildItemGrid.instance.SaveOwnedItems();
 
                 return;
             }
