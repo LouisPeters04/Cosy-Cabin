@@ -10,7 +10,7 @@ public class Placeable : MonoBehaviour
     [SerializeField] private bool canStack;
     [SerializeField] private int layer;
 
-    [SerializeField] private int rotationIndex;
+    [SerializeField] public int rotationIndex;
     [SerializeField] public float heightOffset;
     [SerializeField] public BuildFurniture furnitureData;
 

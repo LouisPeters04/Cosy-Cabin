@@ -18,6 +18,7 @@ public class CurrencyManager : MonoBehaviour
     {
         instance = this;
         lastResetDate = DateTime.Now.Date;
+        LoadCurrency();
     }
 
     private void Update()
@@ -37,6 +38,7 @@ public class CurrencyManager : MonoBehaviour
         {
             AddCoins(100);
             tasksCompletedToday++;
+            SaveCurrency();
         }
 
         if (tasksCompletedToday > 3)
@@ -48,6 +50,7 @@ public class CurrencyManager : MonoBehaviour
     public void RewardSession()
     {
         AddCoins(250);
+        SaveCurrency();
     }
 
     public void AddCoins(int amount)
@@ -56,10 +59,48 @@ public class CurrencyManager : MonoBehaviour
 
         CurrencyUI.instance.UpdateCoins(CabinCoins);
 
+        if(ShopCurrencyUI.instance != null)
+        {
+            ShopCurrencyUI.instance.UpdateCurrency(CabinCoins);
+        }
+
         if (amount > 0)
         {
             CurrencyUI.instance.ShowPopup(amount);
         }
+
+        SaveCurrency();
+    }
+
+    private void SaveCurrency()
+    {
+        CurrencySaveData data = new CurrencySaveData
+        {
+            cabinCoins = CabinCoins,
+            tasksCompletedToday = tasksCompletedToday,
+            lastResetDate = lastResetDate.ToString("yyyy-MM-dd")
+        };
+
+        SaveSystem.SaveCurrency(data);
+    }
+
+    private void LoadCurrency()
+    {
+        CurrencySaveData data = SaveSystem.LoadCurrency();
+
+        if (data == null)
+        {
+            CabinCoins = 0;
+            tasksCompletedToday = 0;
+            lastResetDate = DateTime.Now.Date;
+            return;
+        }
+
+        CabinCoins = data.cabinCoins;
+        tasksCompletedToday = data.tasksCompletedToday;
+        lastResetDate = DateTime.Parse(data.lastResetDate);
+
+        CurrencyUI.instance.UpdateCoins(CabinCoins);
     }
     #endregion
 }

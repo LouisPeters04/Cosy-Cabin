@@ -40,6 +40,8 @@ public class PlacementController : MonoBehaviour
 
                 BuildItemGrid.instance.RestoreItem(p.furnitureData);
 
+                BuildSaveManager.instance.RemovePlacedFurniture(p.furnitureData, p.placedX, p.placedY);
+
                 p.ClearCells();
 
                 selectedItem = p.furnitureData;
@@ -55,6 +57,9 @@ public class PlacementController : MonoBehaviour
                 preview = Instantiate(selectedItem.prefab).AddComponent<PlacementPreview>();
                 preview.Init(selectedItem);
                 TweenUtils.PopScale(p.transform);
+                BuildItemGrid.instance.ownedFurniture.Add(p.furnitureData);
+                BuildItemGrid.instance.SaveOwnedItems();
+
                 return;
             }
         }
@@ -147,14 +152,19 @@ public class PlacementController : MonoBehaviour
             obj.transform.position = preview.transform.position;
             obj.transform.rotation = preview.transform.rotation;
 
-            obj.GetComponent<Placeable>().Place(x, y);
-
+            Placeable placeable = obj.GetComponent<Placeable>();
+            placeable.Place(x, y);
+           
             TweenUtils.PopScale(obj.transform);
+
+            BuildSaveManager.instance.AddPlacedFurniture(selectedItem, x, y, placeable.rotationIndex * 45);
 
             Destroy(preview.gameObject);
             preview = null;
 
             BuildItemGrid.instance.RemoveItem(selectedItem);
+            BuildItemGrid.instance.ownedFurniture.Remove(selectedItem);
+            BuildItemGrid.instance.SaveOwnedItems();
             selectedItem = null;
         }
     }
