@@ -91,6 +91,13 @@ public class PomodoroTimer : MonoBehaviour
     private void FinishPomodoro()
     {
         _running = false;
+        _onBreak = false;
+
+        float workMinutes = float.Parse(timerText.text);
+
+        int rewardCoins = Mathf.FloorToInt(workMinutes / 10f);
+        CurrencyManager.instance.AddCoins(rewardCoins * 250);
+
         timerFill.fillAmount = 1f;
         timerText.text = "";
 

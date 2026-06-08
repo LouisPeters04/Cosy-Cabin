@@ -95,6 +95,8 @@ public class TaskManager : MonoBehaviour
         item.transform.SetParent(completedTaskContent);
         item.transform.DOLocalMove(Vector3.zero, 0.3f).SetEase(Ease.OutCubic);
 
+        CurrencyManager.instance.TasksCompleted();
+
         SaveSystem.Save(_saveData);
     }
 
